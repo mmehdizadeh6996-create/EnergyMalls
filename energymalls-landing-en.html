@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>EnergyMalls | Buy and sell oil & gas products on Telegram</title>
+<meta name="description" content="Request quotes, place buy or sell orders for oil and gas products, and track them in one Telegram chat with the EnergyMalls bot.">
+<meta name="theme-color" content="#0A2350">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+<!-- ============================================================
+     1) Paste your Google Ads / gtag snippet here:
+     <script async src="https://www.googletagmanager.com/gtag/js?id=AW-XXXXXXXXX"></script>
+     <script>
+       window.dataLayer = window.dataLayer || [];
+       function gtag(){dataLayer.push(arguments);}
+       gtag('js', new Date());
+       gtag('config', 'AW-XXXXXXXXX');
+     </script>
+     ============================================================ -->
+
+<style>
+  :root{
+    --navy:#0A2350;
+    --navy-2:#0F3170;
+    --blue:#1F5FD1;
+    --sky:#EDF3FC;
+    --gold:#D4A62A;
+    --gold-l:#E8C25A;
+    --gold-d:#A9801A;
+    --line:#D5DFEF;
+    --text:#14264A;
+    --muted:#50607F;
+    --white:#fff;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{
+    font-family:"Sora",system-ui,-apple-system,"Segoe UI",Arial,sans-serif;
+    color:var(--text);background:var(--white);
+    line-height:1.75;font-size:16.5px;-webkit-font-smoothing:antialiased;
+  }
+  a{color:inherit}
+  :focus-visible{outline:3px solid var(--gold);outline-offset:3px;border-radius:6px}
+  .wrap{width:min(1140px,100% - 40px);margin-inline:auto}
+
+  /* ---------- Buttons ---------- */
+  .btn{
+    display:inline-flex;align-items:center;justify-content:center;gap:10px;
+    min-height:54px;padding:0 30px;border-radius:12px;
+    font:700 1rem/1 "Sora",Arial,sans-serif;text-decoration:none;
+    border:2px solid transparent;cursor:pointer;
+    transition:background .2s,transform .15s,border-color .2s;
+  }
+  .btn svg{width:22px;height:22px;flex:none}
+  .btn-gold{background:linear-gradient(180deg,var(--gold-l),var(--gold));color:var(--navy)}
+  .btn-gold:hover{background:var(--gold-l)}
+  .btn-gold:active{transform:translateY(1px)}
+  .btn-ghost{border-color:rgba(255,255,255,.4);color:var(--white)}
+  .btn-ghost:hover{border-color:var(--gold-l);color:var(--gold-l)}
+  .btn-sm{min-height:44px;padding:0 20px;font-size:.92rem}
+
+  /* ---------- Header ---------- */
+  header.top{background:var(--navy);color:var(--white);border-bottom:1px solid rgba(232,194,90,.35)}
+  .top .wrap{display:flex;align-items:center;justify-content:space-between;height:74px}
+  .brand{display:flex;align-items:center;gap:12px;text-decoration:none;font-weight:800;font-size:1.3rem;letter-spacing:.2px}
+  .brand-mark{width:38px;height:38px;flex:none}
+
+  /* ---------- Hero ---------- */
+  .hero{
+    background:
+      radial-gradient(900px 500px at 85% 20%,rgba(31,95,209,.55),transparent 65%),
+      var(--navy);
+    color:var(--white);
+    padding:64px 0 96px;overflow:hidden;
+  }
+  .hero .wrap{display:grid;grid-template-columns:1.15fr .85fr;gap:56px;align-items:center}
+  .hero h1{
+    font-size:clamp(2.1rem,4.6vw,3.4rem);
+    line-height:1.18;font-weight:800;letter-spacing:-.02em;margin-bottom:22px;
+  }
+  .hero h1 em{font-style:normal;color:var(--gold-l)}
+  .hero p.lead{font-size:1.1rem;color:#C5D4EE;max-width:33em;margin-bottom:34px}
+  .cta-row{display:flex;flex-wrap:wrap;gap:14px;margin-bottom:24px}
+  .hero-note{display:flex;align-items:center;gap:12px;color:#A9BEE0;font-size:.92rem}
+  .hero-note::before{content:"";width:30px;height:2px;background:var(--gold);flex:none}
+
+  /* ---------- Phone mock ---------- */
+  .phone{
+    width:min(320px,100%);margin-inline:auto;
+    background:#061634;border-radius:38px;padding:10px;
+    box-shadow:0 30px 60px rgba(0,0,0,.45),0 0 0 1px rgba(232,194,90,.35);
+  }
+  .screen{background:#E4ECF8;border-radius:30px;overflow:hidden;height:540px;display:flex;flex-direction:column}
+  .chat-head{background:var(--blue);color:#fff;display:flex;align-items:center;gap:12px;padding:14px 16px}
+  .avatar{width:40px;height:40px;border-radius:50%;background:var(--gold);color:var(--navy);display:grid;place-items:center;font-weight:800;font-size:.9rem;flex:none}
+  .chat-head b{display:block;font-size:1rem;line-height:1.3}
+  .chat-head small{font-size:.78rem;opacity:.85;line-height:1.2}
+  .chat-body{flex:1;padding:14px 12px;display:flex;flex-direction:column;gap:10px;overflow:hidden;justify-content:flex-end}
+  .msg{max-width:84%;padding:9px 13px;border-radius:16px;font-size:.88rem;line-height:1.6;box-shadow:0 1px 1px rgba(10,35,80,.1)}
+  .msg.user{align-self:flex-end;background:#D3E4FF;border-bottom-right-radius:4px}
+  .msg.bot{align-self:flex-start;background:#fff;border-bottom-left-radius:4px}
+  .msg.bot.wide{max-width:92%}
+  .msg .opts{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:9px}
+  .msg .opts span{background:var(--sky);color:var(--blue);font-weight:700;text-align:center;border-radius:8px;padding:6px 4px;font-size:.8rem;border:1px solid #C7D8F3}
+  .typing{align-self:flex-start;background:#fff;border-radius:16px;padding:12px 16px;display:flex;gap:5px}
+  .typing i{width:7px;height:7px;border-radius:50%;background:#8DA2C6;animation:blink 1s infinite}
+  .typing i:nth-child(2){animation-delay:.15s}
+  .typing i:nth-child(3){animation-delay:.3s}
+  @keyframes blink{0%,80%,100%{opacity:.25}40%{opacity:1}}
+  .pop{animation:pop .3s ease-out both}
+  @keyframes pop{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+
+  /* ---------- Sections ---------- */
+  section{padding:90px 0}
+  .sec-head{max-width:640px;margin-bottom:44px}
+  .sec-head h2{
+    font-size:clamp(1.6rem,3.2vw,2.3rem);line-height:1.3;font-weight:800;color:var(--navy);
+    letter-spacing:-.015em;margin-bottom:12px;padding-bottom:14px;position:relative;
+  }
+  .sec-head h2::after{content:"";position:absolute;left:0;bottom:0;width:56px;height:3px;background:var(--gold)}
+  .sec-head p{color:var(--muted)}
+
+  /* Products */
+  .plist{display:grid;grid-template-columns:1fr 1fr;column-gap:56px;border-top:2px solid var(--navy)}
+  .prow{display:flex;justify-content:space-between;align-items:baseline;gap:16px;padding:18px 0;border-bottom:1px solid var(--line)}
+  .prow b{font-size:1.05rem;color:var(--navy)}
+  .prow span{color:var(--muted);font-size:.92rem;text-align:right}
+  .pnote{margin-top:18px;color:var(--muted);font-size:.92rem}
+
+  /* Steps */
+  .how{background:var(--sky)}
+  .steps{display:grid;grid-template-columns:repeat(3,1fr)}
+  .step{padding-right:28px}
+  .step + .step{border-left:1px solid #B9CCEA;padding-left:28px}
+  .step .n{
+    width:48px;height:48px;border-radius:50%;background:var(--navy);color:var(--gold-l);
+    display:grid;place-items:center;font-weight:800;font-size:1.15rem;margin-bottom:18px;
+    box-shadow:0 0 0 4px var(--sky),0 0 0 6px var(--gold);
+  }
+  .step h3{font-size:1.15rem;color:var(--navy);margin-bottom:8px;line-height:1.4}
+  .step p{color:var(--muted);font-size:.96rem}
+
+  /* Split */
+  .split{display:grid;grid-template-columns:1fr 1fr;gap:28px}
+  .side{border-radius:20px;padding:38px}
+  .side.buy{background:var(--navy);color:var(--white)}
+  .side.sell{background:var(--white);border:2px solid var(--navy);box-shadow:8px 8px 0 var(--gold)}
+  .side h3{font-size:1.4rem;margin-bottom:6px;line-height:1.3}
+  .side .sub{opacity:.8;margin-bottom:22px;font-size:.96rem}
+  .side ul{list-style:none;display:grid;gap:14px}
+  .side li{display:flex;gap:12px;align-items:flex-start}
+  .side li svg{width:22px;height:22px;flex:none;margin-top:4px}
+  .buy li svg{color:var(--gold-l)}
+  .sell li svg{color:var(--blue)}
+
+  /* FAQ */
+  .faq{background:var(--sky)}
+  .faq-list{max-width:820px}
+  details{border-bottom:1px solid #B9CCEA}
+  details:first-child{border-top:2px solid var(--navy)}
+  summary{
+    list-style:none;cursor:pointer;padding:20px 0;font-weight:700;color:var(--navy);
+    display:flex;justify-content:space-between;align-items:center;gap:16px;
+  }
+  summary::-webkit-details-marker{display:none}
+  summary::after{content:"+";font-size:1.7rem;line-height:1;color:var(--gold-d);transition:transform .2s}
+  details[open] summary::after{transform:rotate(45deg)}
+  details p{padding:0 0 20px;color:var(--muted);max-width:44em}
+
+  /* Final CTA */
+  .final{
+    background:
+      radial-gradient(700px 400px at 15% 100%,rgba(31,95,209,.5),transparent 65%),
+      var(--navy);
+    color:var(--white);text-align:center;padding:88px 0;border-top:3px solid var(--gold);
+  }
+  .final h2{font-size:clamp(1.6rem,3.4vw,2.4rem);line-height:1.3;font-weight:800;letter-spacing:-.015em;margin-bottom:12px}
+  .final p{color:#C5D4EE;margin-bottom:30px}
+
+  footer{background:#061634;color:#93A9CF;font-size:.86rem;padding:28px 0 96px}
+  footer .wrap{display:flex;flex-wrap:wrap;justify-content:space-between;gap:12px}
+  footer .disc{max-width:640px}
+
+  .sticky{display:none}
+
+  /* ---------- Responsive ---------- */
+  @media (max-width:900px){
+    .hero .wrap{grid-template-columns:1fr;gap:48px}
+    .hero{padding:44px 0 68px}
+    .plist{grid-template-columns:1fr}
+    .steps{grid-template-columns:1fr;gap:36px}
+    .step,.step + .step{padding:0;border:0}
+    .split{grid-template-columns:1fr}
+    section{padding:64px 0}
+  }
+  @media (max-width:760px){
+    body{font-size:16px}
+    .cta-row .btn{width:100%}
+    .top .btn-sm{display:none}
+    .screen{height:500px}
+    .sticky{
+      display:block;position:fixed;left:0;right:0;bottom:0;z-index:20;
+      padding:10px 16px calc(10px + env(safe-area-inset-bottom,0px));
+      background:rgba(10,35,80,.97);border-top:1px solid rgba(232,194,90,.4);
+    }
+    .sticky .btn{width:100%}
+    .side{padding:26px}
+    .side.sell{box-shadow:6px 6px 0 var(--gold)}
+    .prow{flex-direction:column;gap:2px}
+    .prow span{text-align:left}
+  }
+  @media (prefers-reduced-motion:reduce){
+    html{scroll-behavior:auto}
+    .pop,.typing i{animation:none}
+  }
+</style>
+</head>
+<body>
+
+<header class="top">
+  <div class="wrap">
+    <a class="brand" href="#" aria-label="EnergyMalls home">
+      <svg class="brand-mark" viewBox="0 0 40 40" aria-hidden="true">
+        <rect width="40" height="40" rx="10" fill="#D4A62A"/>
+        <path d="M20 7c4.5 6 8 9.5 8 14a8 8 0 0 1-16 0c0-4.5 3.5-8 8-14z" fill="#0A2350"/>
+        <path d="M16.5 24.5a3.5 3.5 0 0 0 7 0" stroke="#D4A62A" stroke-width="2" fill="none" stroke-linecap="round"/>
+      </svg>
+      <span>EnergyMalls</span>
+    </a>
+    <a class="btn btn-gold btn-sm" data-cta="header" href="#">Start on Telegram</a>
+  </div>
+</header>
+
+<main>
+<!-- ================= HERO ================= -->
+<div class="hero">
+  <div class="wrap">
+    <div>
+      <h1>Buy and sell oil &amp; gas products <em>right inside Telegram</em></h1>
+      <p class="lead">Request quotes, place buy or sell orders and follow up on them with the EnergyMalls bot, all in one chat. No scattered phone calls and no long waits.</p>
+      <div class="cta-row">
+        <a class="btn btn-gold" data-cta="hero" href="#">
+          <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M21.9 4.3L18.7 19.5c-.2 1-.9 1.3-1.7.8l-4.8-3.6-2.3 2.2c-.3.3-.5.5-1 .5l.3-4.9 8.9-8c.4-.3-.1-.5-.6-.2L6.5 13.2l-4.7-1.5c-1-.3-1-1 .2-1.5L20.4 3.1c.9-.3 1.7.2 1.5 1.2z"/></svg>
+          Start on Telegram
+        </a>
+        <a class="btn btn-ghost" href="#how">See how it works</a>
+      </div>
+      <div class="hero-note">All you need is Telegram. There is nothing new to install.</div>
+    </div>
+
+    <div class="phone" aria-label="Sample conversation with the EnergyMalls bot">
+      <div class="screen">
+        <div class="chat-head">
+          <div class="avatar">EM</div>
+          <div><b>EnergyMalls</b><small>bot</small></div>
+        </div>
+        <div class="chat-body" id="chat" aria-live="off"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ================= PRODUCTS ================= -->
+<section class="products" id="products">
+  <div class="wrap">
+    <div class="sec-head">
+      <h2>Products you can request</h2>
+      <p>Whether you are buying or selling, pick your product from the bot menu.</p>
+    </div>
+    <div class="plist">
+      <div class="prow"><b>Gasoil (diesel)</b><span>Industrial and transport fuel</span></div>
+      <div class="prow"><b>Fuel oil (mazut)</b><span>Boilers, furnaces and power plants</span></div>
+      <div class="prow"><b>Gasoline</b><span>Vehicle fuel</span></div>
+      <div class="prow"><b>LPG</b><span>Industrial and commercial use</span></div>
+      <div class="prow"><b>Bitumen</b><span>Road building and waterproofing</span></div>
+      <div class="prow"><b>Naphtha &amp; gas condensate</b><span>Petrochemical feedstock</span></div>
+      <div class="prow"><b>Base oils &amp; lubricants</b><span>Industry and automotive</span></div>
+      <div class="prow"><b>Other products</b><span>Submit your request in the bot</span></div>
+    </div>
+    <p class="pnote">Availability, specifications and terms for each product are shown inside the bot.</p>
+  </div>
+</section>
+
+<!-- ================= HOW ================= -->
+<section class="how" id="how">
+  <div class="wrap">
+    <div class="sec-head">
+      <h2>Three steps from first message to offer</h2>
+      <p>Everything happens in the same Telegram chat.</p>
+    </div>
+    <div class="steps">
+      <div class="step">
+        <div class="n">1</div>
+        <h3>Open the bot in Telegram</h3>
+        <p>Tap "Start on Telegram", then press Start in the chat.</p>
+      </div>
+      <div class="step">
+        <div class="n">2</div>
+        <h3>Choose your product and quantity</h3>
+        <p>Pick buy or sell, then enter the product, quantity and delivery location.</p>
+      </div>
+      <div class="step">
+        <div class="n">3</div>
+        <h3>Get offers and track progress</h3>
+        <p>Follow the result of your request and the next steps from the same conversation.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= SPLIT ================= -->
+<section id="benefits">
+  <div class="wrap">
+    <div class="sec-head">
+      <h2>Built for both sides of the deal</h2>
+      <p>One simple path for buyers and one for sellers.</p>
+    </div>
+    <div class="split">
+      <div class="side buy">
+        <h3>If you are a buyer</h3>
+        <p class="sub">You need supply with clear specifications and quantity.</p>
+        <ul>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg><span>Ask for a quote without picking up the phone</span></li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg><span>Submit a request with your quantity and delivery location</span></li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg><span>Track your order status in one conversation</span></li>
+        </ul>
+      </div>
+      <div class="side sell">
+        <h3>If you are a seller</h3>
+        <p class="sub">You have product and want serious buyers.</p>
+        <ul>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg><span>List your product with its specifications and quantity</span></li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg><span>Receive buyer requests directly in Telegram</span></li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg><span>Manage negotiation and follow-up in one place</span></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= FAQ ================= -->
+<section class="faq" id="faq">
+  <div class="wrap">
+    <div class="sec-head">
+      <h2>Frequently asked questions</h2>
+    </div>
+    <div class="faq-list">
+      <details>
+        <summary>What do I need to get started?</summary>
+        <p>Just Telegram. Tap "Start on Telegram", the bot opens and you will see its menu.</p>
+      </details>
+      <details>
+        <summary>Can I both buy and sell?</summary>
+        <p>Yes. The bot menu has a separate path for buying and for selling.</p>
+      </details>
+      <details>
+        <summary>Which products can I request?</summary>
+        <p>Gasoil, fuel oil, gasoline, LPG, bitumen, naphtha and base oils are among the products you can request. The full list is shown inside the bot.</p>
+      </details>
+      <details>
+        <summary>How do I track my request?</summary>
+        <p>Open your chat with the bot and choose the tracking option from the menu.</p>
+      </details>
+    </div>
+  </div>
+</section>
+
+<!-- ================= FINAL CTA ================= -->
+<div class="final">
+  <div class="wrap">
+    <h2>Submit your request on Telegram today</h2>
+    <p>The EnergyMalls bot is always available.</p>
+    <a class="btn btn-gold" data-cta="final" href="#">
+      <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M21.9 4.3L18.7 19.5c-.2 1-.9 1.3-1.7.8l-4.8-3.6-2.3 2.2c-.3.3-.5.5-1 .5l.3-4.9 8.9-8c.4-.3-.1-.5-.6-.2L6.5 13.2l-4.7-1.5c-1-.3-1-1 .2-1.5L20.4 3.1c.9-.3 1.7.2 1.5 1.2z"/></svg>
+      Start on Telegram
+    </a>
+  </div>
+</div>
+</main>
+
+<footer>
+  <div class="wrap">
+    <div>&copy; <span id="yr"></span> EnergyMalls</div>
+    <div class="disc">Prices and availability change and are provided through the bot at the time of your request. Information on this page is not a binding offer to buy or sell.</div>
+  </div>
+</footer>
+
+<div class="sticky">
+  <a class="btn btn-gold" data-cta="sticky" href="#">Start on Telegram</a>
+</div>
+
+<script>
+  /* ========= SETTINGS: put your bot link here ========= */
+  var BOT_URL = "https://t.me/YOUR_BOT_USERNAME";
+
+  document.getElementById("yr").textContent = new Date().getFullYear();
+
+  document.querySelectorAll("[data-cta]").forEach(function(a){
+    a.href = BOT_URL;
+    a.target = "_blank";
+    a.rel = "noopener";
+    a.addEventListener("click", function(){
+      /* Google Ads conversion: replace with your own ID and label once gtag is installed */
+      if (typeof gtag === "function") {
+        gtag("event", "conversion", {
+          "send_to": "AW-XXXXXXXXX/CONVERSION_LABEL",
+          "event_label": a.getAttribute("data-cta")
+        });
+      }
+    });
+  });
+
+  /* ========= Animated sample chat inside the phone ========= */
+  (function(){
+    var chat = document.getElementById("chat");
+    var script = [
+      {who:"user", html:"/start"},
+      {who:"bot", wide:true, html:"Welcome to EnergyMalls. What would you like to do?<div class='opts'><span>Buy</span><span>Sell</span><span>Get a quote</span><span>Track order</span></div>"},
+      {who:"user", html:"Get a quote"},
+      {who:"bot", html:"Which product do you need? Gasoil, fuel oil, gasoline, LPG or bitumen?"},
+      {who:"user", html:"Gasoil"},
+      {who:"bot", html:"Enter the quantity and delivery location and we will register your request."}
+    ];
+    var reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+    function add(item){
+      var d = document.createElement("div");
+      d.className = "msg " + item.who + (item.wide ? " wide" : "") + (reduce ? "" : " pop");
+      d.innerHTML = item.html;
+      chat.appendChild(d);
+    }
+
+    if (reduce){ script.forEach(add); return; }
+
+    var i = 0;
+    function next(){
+      if (i >= script.length) return;
+      var item = script[i++];
+      if (item.who === "bot"){
+        var t = document.createElement("div");
+        t.className = "typing pop";
+        t.innerHTML = "<i></i><i></i><i></i>";
+        chat.appendChild(t);
+        setTimeout(function(){ t.remove(); add(item); setTimeout(next, 700); }, 900);
+      } else {
+        setTimeout(function(){ add(item); setTimeout(next, 500); }, 600);
+      }
+    }
+    setTimeout(next, 500);
+  })();
+</script>
+</body>
+</html>
