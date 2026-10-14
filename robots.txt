@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://www.energymalls.com/sitemap.xml
+Sitemap: https://energymalls.com/sitemap.xml
